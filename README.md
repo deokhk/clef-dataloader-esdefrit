@@ -6,7 +6,7 @@ We support the following languages: English, Spanish, German, French, Italian.
 
 ## Setup
 - Download and unzip [The CLEF Test Suite for the CLEF 2000-2003 Campaigns – Evaluation Package](https://catalogue.elra.info/en-us/repository/browse/ELRA-E0008/).
-- Set `CLEF_BASE_DIR` in `clef_paths.py` to point to the location of the unzipped dataset.
+- Set `CLEF_BASE_DIR` in `clef_paths.py` to point to the location of the unzipped dataset. (Make sure to change the path in clef_paths.py accordingly!)
 - *(Optional)* Download and unzip Swahili (SW) and Somali (SO) CLEF queries [here](https://ciir.cs.umass.edu/ictir19_simulate_low_resource).
 - *(Optional)* Set `CLEF_LOWRES_DIR` in `clef_paths.py` to where you unzipped the dataset.
 

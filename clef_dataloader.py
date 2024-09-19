@@ -4,7 +4,7 @@ import urllib
 from lxml import html as etree
 from clef_paths import get_lang2pair, PATH_BASE_QUERIES, PATH_BASE_EVAL, CLEF_LOWRES_DIR, all_paths
 from typing import Tuple, List
-
+from tqdm import tqdm 
 
 def _decode_xml(path, encoding):
     if encoding == "plain":
@@ -94,9 +94,9 @@ def load_documents(language, year, limit_documents=None, only_body=False, **kwar
         doc_ids = []
         limit_reached = False
         encoding = 'UTF-8' if doc_lang_iso == "ru" or doc_lang_full == "russian" else 'ISO-8859-1'
-        for doc_dir, extractor in doc_dirs:
+        for doc_dir, extractor in tqdm(doc_dirs, desc="Loading documents"):
             if not limit_reached:
-                for file in next(os.walk(doc_dir))[2]:
+                for file in tqdm(next(os.walk(doc_dir))[2], desc="Loading files"):
                     if not file.endswith(".dtd"):
                         tmp_doc_ids, tmp_documents = _load_file(
                             file_path = doc_dir + file,
@@ -114,7 +114,6 @@ def load_documents(language, year, limit_documents=None, only_body=False, **kwar
             _docs_cache[key] = (doc_ids, documents)
     else:
         doc_ids, documents = _docs_cache[key]
-      
     return doc_ids, documents
 
 
@@ -131,7 +130,7 @@ def load_queries(language, year, limit=None, encoding=None, include_desc=True) -
         return _load_clef2000_queries(language)
     
     lang_iso, lang_full = get_lang2pair(language)
-    path = os.path.join(PATH_BASE_QUERIES + year, "Top-" + lang_iso + year[-2:] + ".txt")
+    path = os.path.join(PATH_BASE_QUERIES + f"topics{year}", "Top-" + lang_iso + year[-2:] + ".txt")
     
     if not encoding:
         encoding = 'UTF-8' if lang_iso == "ru" or lang_full == "russian" in path else 'ISO-8859-1'

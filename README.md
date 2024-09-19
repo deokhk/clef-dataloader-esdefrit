@@ -1,4 +1,9 @@
 # CLEF dataloader
+
+This is a modified repository from [clef-dataloaders](https://github.com/rlitschk/clef-dataloaders), with extended language coverage.
+We support the following languages: English, Spanish, German, French, Italian.
+
+
 ## Setup
 - Download and unzip [The CLEF Test Suite for the CLEF 2000-2003 Campaigns – Evaluation Package](https://catalogue.elra.info/en-us/repository/browse/ELRA-E0008/).
 - Set `CLEF_BASE_DIR` in `clef_paths.py` to point to the location of the unzipped dataset.
@@ -27,6 +32,8 @@ clef/
     ├── 2002
     └── 2003
 ```
+## Acknowledgements
+We thank the authors of the original [repository](https://github.com/rlitschk/clef-dataloaders) for their work. This repository is a fork of the original repository with extended language support.
 
 ## References
 

@@ -1,21 +1,31 @@
 # from lxml import html as etree
+import re 
+
+
+def remove_extra_spaces(text):
+    # remove extra spaces
+    return re.sub(r'\s+', ' ', text)
+
 
 
 def _find_all_and_concatenate(doc, xpath):
-    elements = [paragraph.text for paragraph in doc.findall(xpath) if paragraph.text is not None]
+    elements = [paragraph.text.strip() for paragraph in doc.findall(xpath) if paragraph.text is not None]
     elements = ' '.join(elements) if elements is not None else " "
     return elements
 
 
 def _combine(text_elements):
     """
-    Removes newlines and carriage returns
+    Removes newlines, tabs, carriage returns, and extra spaces.
     :param text_elements: list of text snippets
     :return: cleaned and concatenated version of it
+
     """
     text_elements = [elem if elem is not None else "" for elem in text_elements]
     full_text = ' '.join(text_elements)
-    return full_text.replace("\n", " ").replace("\r", " ")
+    combined= full_text.replace("\n", " ").replace("\r", " ").replace("\t", " ")
+    combined = remove_extra_spaces(combined)
+    return combined
 
 
 def extract_english_gh(doc, only_body=False):
@@ -59,18 +69,16 @@ def extract_german_frrundschau(doc, only_body=False):
     full_text = _combine([title, text])
     return document_id, full_text
 
-
-def extract_german_sda(doc, only_body=False):
+def extract_german_sda9495(doc, only_body=False):
     document_id = doc.findtext("docid")
     text = _find_all_and_concatenate(doc, "tx")
     if only_body:
         return document_id, text
-    keywords = doc.findtext("kw")
+    subject_terms = _find_all_and_concatenate(doc, "st")
     title = doc.findtext("ti")
     lead = doc.findtext("ld")
-    full_text = _combine([text, lead, title, keywords])
+    full_text = _combine([title, lead, subject_terms, text])
     return document_id, full_text
-
 
 def extract_russian(doc, only_body=False):
     document_id = doc.findtext("docid")
@@ -112,7 +120,8 @@ def extract_italian_sda9495(doc, only_body=False):
         return document_id, text
     title = _find_all_and_concatenate(doc, "ti")
     lead = _find_all_and_concatenate(doc, "ld")
-    full_text = _combine([title, lead, text])
+    subject_terms = _find_all_and_concatenate(doc, "st")
+    full_text = _combine([title, lead, subject_terms, text])
     return document_id, full_text
 
 
@@ -123,3 +132,37 @@ def extract_finish_aamuleth9495(doc, only_body=False):
         return document_id, text
     text = _combine([text])
     return document_id, text
+
+
+def extract_spanish_efe9495(doc, only_body=False):
+    document_id = doc.findtext("docid")
+    text = _find_all_and_concatenate(doc, "text")
+    if only_body:
+        return document_id, text
+    title = _find_all_and_concatenate(doc, "title")
+    full_text = _combine([title, text])
+    return document_id, full_text
+
+
+def extract_french_sda9495(doc, only_body=False):
+    document_id = doc.findtext("docid")
+    text = _find_all_and_concatenate(doc, "tx")
+    if only_body:
+        return document_id, text
+    title = _find_all_and_concatenate(doc, "ti")
+    lead = _find_all_and_concatenate(doc, "ld")
+    subject_terms = _find_all_and_concatenate(doc, "st")
+    full_text = _combine([title, lead, subject_terms, text])
+    return document_id, full_text
+
+
+
+def extract_french_lemonde(doc, only_body=False):
+    document_id = doc.findtext("docid")
+    text = _find_all_and_concatenate(doc, "text")
+    if only_body:
+        return document_id, text
+    title = doc.findtext("title")
+    lead = doc.findtext("lead1")
+    full_text = _combine([title, lead, text])
+    return document_id, full_text
